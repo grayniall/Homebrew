@@ -28,7 +28,7 @@ functions:
           private: true
           request:
             template:
-              application/json: '{ "monitorid" : "$inputRoot.monitorId",  "datetime" : "$inputRoot.datetime",   "tempCelsius" : "$inputRoot.tempCelsius",  "tempFarenheit" : "$inputRoot.tempFarenheit"}'
+              application/json: '{ "monitorId" : "$inputRoot.monitorId",  "dateTime" : "$inputRoot.datetime",   "tempCelsius" : "$inputRoot.tempCelsius",  "tempFarenheit" : "$inputRoot.tempFarenheit"}'
     memorySize: 128
 
 resources:
@@ -38,11 +38,15 @@ resources:
       Properties:
         TableName: homebrew
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: monitorid
+            AttributeType: S
+          - AttributeName: datetime
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: monitorid
             KeyType: HASH
+          - AttributeName: datetime
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

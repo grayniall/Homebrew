@@ -12,13 +12,13 @@ exports.handler = function(event, context, callback) {
     var params = {
         "TableName": "homebrew",
         "Item": {
-            "id": {
-                S: uuid.v1()
-            },
+            // "id": {
+            //     S: uuid.v1()
+            // },
             "monitorid": {
                 S: eventBody.monitorId
             },
-            "dateTime": {
+            "datetime": {
                 S: eventBody.datetime
             },
             "celcius": {
