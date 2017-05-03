@@ -2,8 +2,10 @@ import os
 import glob
 import time
 import json
-import urllib2
+import requests
 import fnmatch
+import datetime
+import config
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -33,19 +35,24 @@ def read_temp(device_id):
 
 def PostTempReadings(device_info):
         data = {
-        'id': device_info[0],
-        'tempCelsius': device_info[1],
-        'tempFarenheit': device_info[2]
+                'monitorId': device_info[0],
+                'datetime': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                'tempCelsius': device_info[1],
+                'tempFarenheit': device_info[2]
         }
 
-        req = urllib2.Request('https://wn394dz7dc.execute-api.eu-west-1.amazonaws.com/v1/temp')
-        req.add_header('Content-Type', 'application/json')
-        response = urllib2.urlopen(req, json.dumps(data))
-        print(response)
+        headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': temp_config.aws_config['key']
+        }
+
+        url = temp_config.aws_config['url']
+        r = requests.post(url, headers=headers, data=json.dumps(data))
+        print(r)
 
 while True:
         for root, dirnames,filenames in os.walk(base_dir):
                 for dir in fnmatch.filter(dirnames, '28*'):
                         PostTempReadings(read_temp(dir))
 
-        time.sleep(1)
+        time.sleep(60)
